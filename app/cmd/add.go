@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	"tasker-cli/app/utils"
+
 	"github.com/spf13/cobra"
 )
 
@@ -27,6 +29,7 @@ var addCmd = &cobra.Command{
 
 				if len(task) > 0 {
 					count++
+					utils.AddTask(task)
 					fmt.Println(task)
 				}
 			}
