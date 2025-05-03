@@ -25,7 +25,7 @@ func RemoveTask(id int) (int, error) {
 	_, err := GetParsedFile("{}", &tasks, TASK_FILE_PATH)
 
 	if err != nil {
-		fmt.Println("Error retrieving tasks")
+		fmt.Println("Error retrieving tasks", err)
 		return count, err
 	}
 
@@ -42,7 +42,27 @@ func RemoveTask(id int) (int, error) {
 	return count, nil
 }
 
-func UpdateTask() {}
+func UpdateTask(id int, status string) (int, error) {
+	var tasks []models.Task
+	count := 0
+
+	_, err := GetParsedFile("{}", &tasks, TASK_FILE_PATH)
+
+	if err != nil {
+		fmt.Println("Error retrieving tasks", err)
+		return count, err
+	}
+
+	for index, task := range tasks {
+		if task.Id == id {
+			tasks[index].Status = status
+		}
+	}
+
+	StoreJsonToFile(tasks)
+
+	return count, nil
+}
 
 func GetAllTask() []models.Task {
 	var tasks []models.Task
