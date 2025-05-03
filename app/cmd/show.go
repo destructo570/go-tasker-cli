@@ -18,9 +18,9 @@ var showCmd = &cobra.Command{
 	Long:  `Show all or a single task`,
 	Run: func(cmd *cobra.Command, args []string) {
 		tasks := utils.GetAllTask()
-
+		fmt.Println("# ID   |   Status   |   Description")
 		for _, task := range tasks {
-			fmt.Printf("%d | %s | %s \n", task.Id, task.Title, task.Status)
+			fmt.Printf("%d          %s          %s \n", task.Id, task.Status, task.Title)
 		}
 	},
 }
