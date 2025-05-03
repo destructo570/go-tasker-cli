@@ -17,23 +17,29 @@ func AddTask(taskTitle string) {
 	SaveTasksToFile(taskTitle)
 }
 
-func RemoveTask(id int) {
+func RemoveTask(id int) (int, error) {
 	var tasks []models.Task
 	var filteredTasks []models.Task
+	count := 0
 
 	_, err := GetParsedFile("{}", &tasks, TASK_FILE_PATH)
 
 	if err != nil {
 		fmt.Println("Error retrieving tasks")
+		return count, err
 	}
 
 	for _, task := range tasks {
 		if task.Id != id {
 			filteredTasks = append(filteredTasks, task)
+		} else {
+			count++
 		}
 	}
 
 	StoreJsonToFile(filteredTasks)
+
+	return count, nil
 }
 
 func UpdateTask() {}
