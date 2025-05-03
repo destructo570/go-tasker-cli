@@ -38,6 +38,18 @@ func RemoveTask(id int) {
 
 func UpdateTask() {}
 
+func GetAllTask() []models.Task {
+	var tasks []models.Task
+
+	_, err := GetParsedFile("{}", &tasks, TASK_FILE_PATH)
+
+	if err != nil {
+		fmt.Println("Error retrieving tasks")
+	}
+
+	return tasks
+}
+
 func SaveTasksToFile(title string) {
 	var currentTasks []models.Task
 
