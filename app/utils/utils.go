@@ -17,11 +17,26 @@ func AddTask(taskTitle string) {
 	SaveTasksToFile(taskTitle)
 }
 
-func RemoveTask() {}
+func RemoveTask(id int) {
+	var tasks []models.Task
+	var filteredTasks []models.Task
+
+	_, err := GetParsedFile("{}", &tasks, TASK_FILE_PATH)
+
+	if err != nil {
+		fmt.Println("Error retrieving tasks")
+	}
+
+	for _, task := range tasks {
+		if task.Id != id {
+			filteredTasks = append(filteredTasks, task)
+		}
+	}
+
+	StoreJsonToFile(filteredTasks)
+}
 
 func UpdateTask() {}
-
-func GetAllTask() {}
 
 func SaveTasksToFile(title string) {
 	var currentTasks []models.Task
@@ -41,7 +56,13 @@ func SaveTasksToFile(title string) {
 
 	currentTasks = append(currentTasks, task)
 
-	jsonData, err := json.Marshal(currentTasks)
+	StoreJsonToFile(currentTasks)
+
+}
+
+func StoreJsonToFile(data any) {
+
+	jsonData, err := json.Marshal(data)
 
 	if err != nil {
 		fmt.Println("Error encoding task to JSON: ", err)
@@ -62,7 +83,6 @@ func SaveTasksToFile(title string) {
 		fmt.Println("Error writing task to file:", writeErr)
 		return
 	}
-
 }
 
 func GetParsedFile[T any](fallback string, dataType *T, filePath string) (any, error) {
