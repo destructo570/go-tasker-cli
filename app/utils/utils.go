@@ -2,9 +2,11 @@ package utils
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"os"
+	"slices"
 	"strings"
 	"tasker-cli/app/models"
 	"time"
@@ -12,6 +14,7 @@ import (
 
 var TASK_FILE_PATH string = "./tasks.json"
 var CONFIG_FILE_PATH string = "./config.json"
+var TASK_STATUS = []string{"done", "pending"}
 
 func AddTask(taskTitle string) {
 	SaveTasksToFile(taskTitle)
@@ -42,9 +45,10 @@ func RemoveTask(id int) (int, error) {
 	return count, nil
 }
 
-func UpdateTask(id int, status string) (int, error) {
+func UpdateTask(id int, statusArg string) (int, error) {
 	var tasks []models.Task
 	count := 0
+	status := GetSanitizedString(statusArg)
 
 	_, err := GetParsedFile("{}", &tasks, TASK_FILE_PATH)
 
@@ -53,14 +57,18 @@ func UpdateTask(id int, status string) (int, error) {
 		return count, err
 	}
 
-	for index, task := range tasks {
-		if task.Id == id {
-			tasks[index].Status = status
-			tasks[index].UpdatedAt = time.Now().Local().String()
+	if slices.Contains(TASK_STATUS, status) {
+		for index, task := range tasks {
+			if task.Id == id {
+				tasks[index].Status = status
+				tasks[index].UpdatedAt = time.Now().Local().String()
+			}
 		}
-	}
 
-	StoreJsonToFile(tasks, TASK_FILE_PATH)
+		StoreJsonToFile(tasks, TASK_FILE_PATH)
+	} else {
+		return count, errors.New("invalid status passed")
+	}
 
 	return count, nil
 }

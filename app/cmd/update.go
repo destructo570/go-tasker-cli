@@ -32,7 +32,8 @@ var updateCmd = &cobra.Command{
 			_, updateErr := utils.UpdateTask(id, status)
 
 			if updateErr != nil {
-				fmt.Printf("Error updating task -[%d]\n", id)
+				fmt.Printf("Error updating task -[%d]: %v\n", id, updateErr)
+				return
 			}
 
 			fmt.Printf("Task updated successfully - [%d]\n", id)
