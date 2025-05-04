@@ -37,7 +37,7 @@ func RemoveTask(id int) (int, error) {
 		}
 	}
 
-	StoreJsonToFile(filteredTasks)
+	StoreJsonToFile(filteredTasks, TASK_FILE_PATH)
 
 	return count, nil
 }
@@ -56,10 +56,11 @@ func UpdateTask(id int, status string) (int, error) {
 	for index, task := range tasks {
 		if task.Id == id {
 			tasks[index].Status = status
+			tasks[index].UpdatedAt = time.Now().Local().String()
 		}
 	}
 
-	StoreJsonToFile(tasks)
+	StoreJsonToFile(tasks, TASK_FILE_PATH)
 
 	return count, nil
 }
@@ -94,11 +95,11 @@ func SaveTasksToFile(title string) {
 
 	currentTasks = append(currentTasks, task)
 
-	StoreJsonToFile(currentTasks)
+	StoreJsonToFile(currentTasks, TASK_FILE_PATH)
 
 }
 
-func StoreJsonToFile(data any) {
+func StoreJsonToFile(data any, filePath string) {
 
 	jsonData, err := json.Marshal(data)
 
@@ -107,7 +108,7 @@ func StoreJsonToFile(data any) {
 		return
 	}
 
-	filePtr, err := os.Create(TASK_FILE_PATH)
+	filePtr, err := os.Create(filePath)
 
 	if err != nil {
 		fmt.Println("Error creating JSON file: ", err)
@@ -115,7 +116,7 @@ func StoreJsonToFile(data any) {
 
 	defer filePtr.Close()
 
-	writeErr := os.WriteFile(TASK_FILE_PATH, []byte(jsonData), 0666)
+	writeErr := os.WriteFile(filePath, []byte(jsonData), 0666)
 
 	if writeErr != nil {
 		fmt.Println("Error writing task to file:", writeErr)
@@ -192,27 +193,7 @@ func saveLastId(num int) {
 
 	config.LastInsertedId = &num
 
-	jsonData, err := json.Marshal(config)
-
-	if err != nil {
-		fmt.Println("Error encoding task to JSON: ", err)
-		return
-	}
-
-	filePtr, err := os.Create(CONFIG_FILE_PATH)
-
-	if err != nil {
-		fmt.Println("Error creating JSON file: ", err)
-	}
-
-	defer filePtr.Close()
-
-	writeErr := os.WriteFile(CONFIG_FILE_PATH, []byte(jsonData), 0666)
-
-	if writeErr != nil {
-		fmt.Println("Error writing task to file:", writeErr)
-		return
-	}
+	StoreJsonToFile(config, CONFIG_FILE_PATH)
 }
 
 // func GetParsedDate (){

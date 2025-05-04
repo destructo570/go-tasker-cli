@@ -18,9 +18,23 @@ var showCmd = &cobra.Command{
 	Long:  `Show all or a single task`,
 	Run: func(cmd *cobra.Command, args []string) {
 		tasks := utils.GetAllTask()
-		fmt.Println("# ID   |   Status   |   Description")
+		fmt.Println("-------------------------------------------")
+		fmt.Println("| ID    |   Status      |    Description  |")
+		fmt.Println("-------------------------------------------")
 		for _, task := range tasks {
-			fmt.Printf("%d          %s          %s \n", task.Id, task.Status, task.Title)
+			fmt.Printf("%d           %s          %s \n", task.Id, getStatusTextLabel(task.Status), task.Title)
 		}
 	},
+}
+
+func getStatusTextLabel(status string) string {
+	switch status {
+	case "done":
+		return "Done   "
+	case "pending":
+		return "Pending"
+	default:
+		return ""
+	}
+
 }
