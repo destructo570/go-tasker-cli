@@ -30,8 +30,10 @@ git clone https://github.com/your-username/tasker-cli.git
 cd tasker-cli
 go build -o tasker
 ./tasker --help
+```
 
-
+## Usage
+```bash
 # Usage
 
 # Adding a new task
@@ -53,3 +55,4 @@ task-cli list
 task-cli list done
 task-cli list todo
 task-cli list in-progress
+```
