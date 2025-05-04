@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"strings"
 
 	"tasker-cli/app/utils"
 
@@ -25,7 +24,7 @@ var addCmd = &cobra.Command{
 			//Iterate over each arg/task provided.
 			// Checks if it's not empty spaces before processing by trimming the arg.
 			for i := range args {
-				task := strings.Trim(args[i], " ")
+				task := utils.GetTrimmedString(args[i])
 
 				if len(task) > 0 {
 					count++

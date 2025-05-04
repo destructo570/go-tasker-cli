@@ -8,13 +8,14 @@ import (
 	"os"
 	"slices"
 	"strings"
+	"tasker-cli/app/constants"
 	"tasker-cli/app/models"
 	"time"
 )
 
 var TASK_FILE_PATH string = "./tasks.json"
 var CONFIG_FILE_PATH string = "./config.json"
-var TASK_STATUS = []string{"done", "pending"}
+var TASK_STATUS = []string{constants.STATUS_DONE, constants.STATUS_PENDING}
 
 func AddTask(taskTitle string) {
 	SaveTasksToFile(taskTitle)
@@ -45,7 +46,31 @@ func RemoveTask(id int) (int, error) {
 	return count, nil
 }
 
-func UpdateTask(id int, statusArg string) (int, error) {
+func UpdateTask(id int, titleArg string) (int, error) {
+	var tasks []models.Task
+	count := 0
+	title := GetTrimmedString(titleArg)
+
+	_, err := GetParsedFile("{}", &tasks, TASK_FILE_PATH)
+
+	if err != nil {
+		fmt.Println("Error retrieving tasks", err)
+		return count, err
+	}
+
+	for index, task := range tasks {
+		if task.Id == id {
+			tasks[index].Title = title
+			tasks[index].UpdatedAt = time.Now().Local().String()
+		}
+	}
+
+	StoreJsonToFile(tasks, TASK_FILE_PATH)
+
+	return count, nil
+}
+
+func UpdateTaskStatus(id int, statusArg string) (int, error) {
 	var tasks []models.Task
 	count := 0
 	status := GetSanitizedString(statusArg)

@@ -3,33 +3,32 @@ package cmd
 import (
 	"fmt"
 	"strconv"
-	"strings"
 
+	"tasker-cli/app/constants"
 	"tasker-cli/app/utils"
 
 	"github.com/spf13/cobra"
 )
 
 func init() {
-	rootCmd.AddCommand(updateCmd)
+	rootCmd.AddCommand(markDoneCmd)
 }
 
-var updateCmd = &cobra.Command{
-	Use:   "update",
-	Short: "Update a task",
-	Long:  `Update a task`,
+var markDoneCmd = &cobra.Command{
+	Use:   "mark-done",
+	Short: "Marks a task done",
+	Long:  `Marks a task done`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 0 {
 
 			id, err := strconv.Atoi(args[0])
-			newTitle := args[1]
 
-			if err != nil || len(strings.Trim(args[1], " ")) == 0 {
+			if err != nil {
 				fmt.Println("Invalid arguments passed")
 				return
 			}
 
-			_, updateErr := utils.UpdateTask(id, newTitle)
+			_, updateErr := utils.UpdateTaskStatus(id, constants.STATUS_DONE)
 
 			if updateErr != nil {
 				fmt.Printf("Error updating task -[%d]: %v\n", id, updateErr)
